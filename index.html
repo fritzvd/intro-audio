@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="fritzvd">
+
+    <title>Intro Audio API</title>
+
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <style>
+      @import url(https://fonts.googleapis.com/css?family=Bitter:700);
+      @import url(https://fonts.googleapis.com/css?family=Raleway:400,700,400italic);
+      @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+      body {
+        font-family: 'Raleway';
+      }
+      h1, h2, h3 {
+        font-family: 'Bitter';
+        font-weight: normal;
+      }
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+
+      .inverse {
+        background-color: #272822;
+        background-size: cover;
+        color: #d6d6d6;
+        text-shadow: 0 0 20px #333;
+      }
+      .inverse h1, .inverse h2 {
+        color: #f3f3f3;
+      }
+
+      .video-background {
+        background-size: 100% 100%;
+        image-rendering: optimizeSpeed;             /* Legal fallback */
+        image-rendering: -moz-crisp-edges;         /* Firefox */
+        image-rendering:   -o-crisp-edges;         /* Opera */
+        image-rendering: -webkit-optimize-contrast;/* Webkit (non-standard naming) */
+        image-rendering: crisp-edges;
+        image-rendering:pixelated;                 /* CSS4 Proposed  */
+        -ms-interpolation-mode: nearest-neighbor;  /* IE (non-standard property) */
+      }
+
+      .footnote {
+        font-size: 80%;
+        position: absolute;
+        bottom: 5%;
+        left: 10%;
+      }
+
+      a,
+      a:visited{
+        color: white;
+      }
+
+      a:hover {
+        color: #a3a3a3;
+      }
+
+      .pitch {
+        width: 500px;
+      }
+
+    </style>
+
+</head>
+
+<body>
+
+  <textarea id="source">
+# Intro to Web audio
+
+---
+# Synthesizers
+---
+
+# Audio api nodes
+
+---
+class: inverse
+
+# Start small
+
+```
+const ac = new AudioContext()
+// or in more familiar ES5
+var ac = new AudioContext();
+```
+---
+# Modular
+
+```
+let oscillator = ac.createOscillator()
+oscillator.frequency.value = 440
+oscillator.start()
+oscillator.connect(ac.destination)
+```
+---
+# Connect 'UI'
+<input type="range" class="pitch" min="1" value="440" max="3000" step="1">
+<span class="rangevalue">440</span>
+
+```html
+<input type="range" class="pitch" min="1" value="440" max="3000" step="1">
+<span class="rangevalue">440</span>
+```
+
+```
+let pitch = document.querySelector('.pitch')
+let rangevalue = document.querySelector('.rangevalue')
+
+pitch.onchange = function () {
+  oscillator.frequency.value = parseInt(pitch.value)
+  rangevalue.innerHTML = oscillator.frequency.value
+}
+```
+---
+# Connect more nodes
+---
+
+  </textarea>
+
+    <script type="text/javascript" src="index.js"></script>
+    <script src="remark.min.js"></script>
+    <script>
+      var slideshow = remark.create({
+        highlightLanguage: 'javascript',
+        highlightStyle: 'tomorrow-night-eighties'
+      });
+
+      slideshow.on('showSlide', function (e) {
+        var index = e.getSlideIndex()
+        slideActions[index](index)
+      })
+
+
+    </script>
+
+</body>
+
+</html>
