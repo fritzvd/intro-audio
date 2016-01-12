@@ -1,10 +1,10 @@
 'use strict'
 
-const ac = new AudioContext()
+var ac = new AudioContext()
 var gain = ac.createGain()
 
-let slideItems = {}
-let cleanUp, oscillator, distortion, biquad
+var slideItems = {}
+var cleanUp, oscillator, distortion, biquad
 
 function simpleOscillator (index) {
   if (cleanUp) {
@@ -31,11 +31,11 @@ function simpleOscillatorWithUI (index) {
   }
 
   simpleOscillator(index)
-  let oscillatorCleanUp = cleanUp
+  var oscillatorCleanUp = cleanUp
   cleanUp = null
 
-  let pitch = document.querySelector('.pitch')
-  let rangevalue = document.querySelector('.rangevalue')
+  var pitch = document.querySelector('.pitch')
+  var rangevalue = document.querySelector('.rangevalue')
 
   pitch.onchange = function () {
     oscillator.frequency.value = parseInt(pitch.value)
@@ -57,8 +57,8 @@ function simpleBiquad (index) {
 
   oscillator = ac.createOscillator()
   oscillator.frequency.value = 440
-  let t = 0
-  let freqChange = setInterval(function () {
+  var t = 0
+  var freqChange = setInterval(function () {
     t += 1
     if (t > 64) {
       oscillator.frequency.value -= t
@@ -80,8 +80,8 @@ function simpleBiquad (index) {
 
   oscillator.connect(ac.destination)
 
-  let biquadOn = false
-  let biquadBtn = document.getElementById('biquad')
+  var biquadOn = false
+  var biquadBtn = document.getElementById('biquad')
   biquadBtn.onclick = function () {
     biquadOn = !biquadOn
     if (biquadOn) {
@@ -108,14 +108,14 @@ function simpleBiquad (index) {
   }
 }
 
-let dummy = function () {
+var dummy = function () {
   if (cleanUp) {
     cleanUp()
     cleanUp = null
   }
 }
 
-const slideActions = [
+var slideActions = [
   dummy,
   dummy,
   dummy,
