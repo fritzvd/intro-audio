@@ -3,27 +3,8 @@
 const ac = new AudioContext()
 var gain = ac.createGain()
 
-// function createOscillators () {
-//   for (var i=0 i < 8 i++) {
-//     var oscillator = ac.createOscillator()
-//     oscillator.connect(gain)
-//     oscillators.push(oscillator)
-//
-//     oscillator.type = 'square'
-//     oscillator.frequency.value = 440
-//     oscillator.start()
-//
-//
-//   }
-// }
-// createOscillators()
-// // oscillator.connect(gain)
-// gain.connect(ac.destination)
-//
-
 let slideItems = {}
-let cleanUp
-let oscillator
+let cleanUp, oscillator, distortion, biquad
 
 function simpleOscillator (index) {
   if (cleanUp) {
@@ -67,6 +48,66 @@ function simpleOscillatorWithUI (index) {
   }
 }
 
+
+function simpleBiquad (index) {
+  if (cleanUp) {
+    cleanUp()
+    cleanUp = null
+  }
+
+  oscillator = ac.createOscillator()
+  oscillator.frequency.value = 440
+  let t = 0
+  let freqChange = setInterval(function () {
+    t += 1
+    if (t > 64) {
+      oscillator.frequency.value -= t
+    } else {
+      oscillator.frequency.value += t
+    }
+
+    if (oscillator.frequency.value < 100) {
+      t = 0
+    }
+  }, 10)
+  oscillator.type = 'sine'
+  oscillator.start()
+
+  biquad = ac.createBiquadFilter()
+  biquad.type = 'peaking'
+  biquad.frequency.value = 1000
+  biquad.gain.value = 40
+
+  oscillator.connect(ac.destination)
+
+  let biquadOn = false
+  let biquadBtn = document.getElementById('biquad')
+  biquadBtn.onclick = function () {
+    biquadOn = !biquadOn
+    if (biquadOn) {
+      oscillator.connect(biquad)
+      biquad.connect(ac.destination)
+      biquadBtn.innerHTML = 'Turn off biquad'
+    } else {
+      oscillator.disconnect(biquad)
+      biquad.disconnect(ac.destination)
+      oscillator.connect(ac.destination)
+      biquadBtn.innerHTML = 'Turn on biquad'
+    }
+
+  }
+
+  cleanUp = function () {
+    if (biquadOn) {
+      biquad.disconnect(ac.destination)
+    }
+    biquad = null
+    oscillator.stop()
+    oscillator = null
+    clearInterval(freqChange)
+  }
+}
+
 let dummy = function () {
   if (cleanUp) {
     cleanUp()
@@ -74,13 +115,12 @@ let dummy = function () {
   }
 }
 
-const slideActions = {
-  0: dummy,
-  1: dummy,
-  2: dummy,
-  3: dummy,
-  4: simpleOscillator,
-  5: simpleOscillatorWithUI,
-  6: dummy,
-  7: dummy,
-}
+const slideActions = [
+  dummy,
+  dummy,
+  dummy,
+  simpleOscillator,
+  simpleOscillatorWithUI,
+  simpleBiquad,
+  dummy,
+]
